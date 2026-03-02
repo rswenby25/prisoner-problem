@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Prisoner Problem</title>
+</head>
+
+<body>
+<!-- Page formatting div-->
+<div>
+   <!-- text box for number of prisoners and trials-->
+   <form>
+      <label> Number of Prosioners: </label>
+      <input type="number" id = "Prisoners" value="100">
+      <br>
+      <label>Number of Trials: </label>
+      <input type="number" id = "Trials" value="10000">
+   </form>
+
+   <p id="message3"></p>
+
+   <!-- Create button to run the trials -->
+    <button type="button" class = "myButton" onclick="runProgram()">Run Program</button>
+
+   <!-- Style page-->
+   <style>
+      .myButton {
+         padding: 15px 100px;
+         margin-left: 800px;
+         margin-top: 50px;
+         border: 2px solid black;
+      }
+      p {
+         margin-left: 800px;
+      }
+      form {
+         margin-left: 800px;
+         margin-top: 100px;
+         padding: 10px;
+      }
+   </style>
+
+   <!-- Create message to print output text-->
+    <p id="message"></p>
+    <p id="message2"></p>
+</div>
+
+<!-- Script div-->
+<div>
+    <script>
+      /*Function to create array of Prisoners */
+      function createPrisoners(numberOfPrisoners) {
+         const size = parseInt(numberOfPrisoners, 10);
+         const pArray = Array.from({length: size}, (item, index) => index);
+         return pArray
+       }
+       /*Function to create array of Boxes */
+       function createBoxes(numberOfPrisoners) {
+         const size = parseInt(numberOfPrisoners, 10);
+         const bArray = Array.from({length: size}, (item, index) => index);
+         return bArray
+       }
+       /*Function to have different values in each "Box" (array element) */
+       function randomizeBoxes(bArray) {
+         let i = bArray.length - 1;
+         while (i != 0) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = bArray[i];
+            bArray[i] = bArray[j];
+            bArray[j] = temp;
+            i--;
+            
+         }
+         return bArray;
+       }
+
+       /* Run a single trial */
+       /* TODO */
+       function searchBoxes(pArray, bArray) {
+         const maxOpen = Math.floor(pArray.length/2); 
+         
+
+         for (let i = 0; i < pArray.length; i++) {
+            let boxFound = false;
+            let currentBox = i;
+            for (let j = 0; j < maxOpen; j++) {
+
+               if (bArray[currentBox] == i) {
+                  boxFound = true;
+                  break;
+               }
+               else {
+                  currentBox = bArray[currentBox];
+               }
+            }
+            if (!boxFound) {
+               return false;
+            }
+         }
+         return true;
+       }
+
+       /*Main function*/
+        function runProgram() {
+
+            /*constants to display text on screen */
+            const display = document.getElementById("message");
+            const display2 = document.getElementById("message2");
+            const display3 = document.getElementById("message3");
+
+            /*Get the numbers from the text boxes */
+            const numberOfPrisoners = document.getElementById("Prisoners").value;
+            const numberOfTrials = document.getElementById("Trials").value;
+
+            /* check if numbers are valid */
+            if (numberOfPrisoners < 2) {
+               display3.textContent = "Please enter an even number greater than 2";
+               return;
+            }
+            else if (numberOfPrisoners % 2 != 0) {
+               display3.textContent = "Please enter even numbers only";
+               return;
+            }
+            else if (numberOfPrisoners < 2) {
+               display3.textContent = "Please a number greater than 2";
+               return;
+            }
+            else {
+               display3.textContent = "";
+            }
+
+            display.textContent = numberOfTrials + " trials for: " + numberOfPrisoners + " prisoners";
+
+               const pArray = createPrisoners(numberOfPrisoners);
+               const bArray = createBoxes(numberOfPrisoners);
+
+            let sucessfulTrials = 0;
+
+            for (let i = 0; i < numberOfTrials; i++) {
+               const shuffledBoxes = randomizeBoxes(bArray);
+               let boxFound = searchBoxes(pArray, bArray);
+               if (boxFound) {
+                  sucessfulTrials++;
+               }
+            }
+            /*display results*/
+            let percent = sucessfulTrials/numberOfTrials;
+            percent = percent*100;
+            percent = percent.toFixed(4);
+            display.textContent = "The trial was successful " + percent + "%" + " of the time";
+            display2.textContent = "Successful Trials: " + sucessfulTrials + "/" + numberOfTrials;
+
+        }
+    </script>
+</div>
+</body>
+</html>
